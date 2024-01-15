@@ -1,36 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokedex</title>
-</head>
+<?php
+require "parciales/head.php";
+require "funciones.php";
+?>
 
 <body>
     <?php
-    for ($id = 1; $id < 152; $id++) {
-        $canal = curl_init();
-        $url = "https://pokeapi.co/api/v2/pokemon/" . $id;
-
-        curl_setopt($canal, CURLOPT_URL, $url);
-        curl_setopt($canal, CURLOPT_RETURNTRANSFER, true);
-        $respuesta = curl_exec($canal);
-
-        if (curl_errno($canal)) {
-            $error = curl_error($canal);
-            echo "Error " . $error . " al conectarse a la API";
-        } else {
-            curl_close($canal);
-
-            $pokemon = json_decode($respuesta, true);
-
-            echo '<a href="https://www.pokemon.com/el/pokedex/' . $pokemon["name"] . '">';
-            echo "<h1>" . $pokemon["id"] . " - " . ucfirst($pokemon["name"]) . "</h1>";
-            echo "</a>";
-        }
-    }
+    $canal = curl_init();
     ?>
+
+    <h1>Elija una generación</h1>
+    <ol>
+        <?php for ($id = 1; $id < 10; $id++) : ?>
+            <li>
+                <a href="/generacion.php?id=<?= $id ?>">
+                    <?php
+                    $url = "https://pokeapi.co/api/v2/generation/" . $id;
+                    $respuesta = conexion($canal, $url);
+                    $generacion = json_decode($respuesta, true);
+                    echo ucfirst($generacion["main_region"]["name"]);
+                    ?>
+                </a>
+            </li>
+        <?php endfor ?>
+    </ol>
 </body>
 
 </html>
